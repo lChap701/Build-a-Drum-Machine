@@ -1,5 +1,5 @@
 {
-  "name": "Build a Drum Machine",
+  "name": "Build-a-Drum-Machine",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
