@@ -1,0 +1,260 @@
+@use "sass:math";
+
+/* The color pallete was taken from: http://www.colorhunter.com/palette/2135330 */
+@import url('https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap');
+
+/* Colors */
+$base-color: #ffb89b;
+$bg-color: darken(#5e1151, 10%);
+$drum-bg-color: #d03ec0;
+$drum-border-color: #5e1151;
+$shadow-color: #000;
+
+/* Width and Heights */
+$padWidth: 80px;
+$padHeight: 60px;
+
+/* Borders */
+$drum-border: 5px solid $drum-border-color;
+
+/* Shadows */
+$drum-shadow: 3px 5px 10px $shadow-color;
+$drum-text-shadow-1: 1px 1px 1px $shadow-color;
+$drum-text-shadow-2: 2px 2px 2px $shadow-color;
+
+/* global */
+* {
+  color: inherit;
+}
+
+:focus {
+  outline: none;
+}
+
+body {
+  background: $bg-color;
+  font-family: "RocknRoll One", sans-serif;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* drum-machine */
+#drum-machine {
+  color: $base-color;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: calc(100vw / 2);
+  min-width: 412px;
+  padding: 30px 0;
+  background: $drum-bg-color;
+  border: $drum-border;
+  box-shadow: $drum-shadow;
+  border-radius: 100px;
+
+  #drum-pads {
+    width: calc(100vw / 5);
+    min-width: 250px;
+    display: grid;
+    grid-template-columns: (repeat(3, 33%));
+    grid-gap: 10px 5px;
+
+    button {
+      text-shadow: $drum-text-shadow-1;
+      font-size: 1.5em;
+      width: $padWidth;
+      height: $padHeight;
+      border: none;
+      padding: 15px 5px 3px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      &:hover,
+      &:focus {
+        text-shadow: $drum-text-shadow-2;
+      }
+    }
+  }
+
+  #options {
+    width: 30%;
+    height: $padHeight * 3 + 32;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    #display {
+      background: #d1515e;
+      width: 200px;
+      text-shadow: $drum-text-shadow-1;
+      border: 2px solid #f42b29;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+    
+    .control {
+      width: 250px;
+    }
+    
+    input[name="volume-slider"] {
+      width: 100%;
+    }
+  }
+}
+
+/* Media queries */
+@media (max-width: 1200px) {
+  #drum-machine {
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  #options {
+    height: 125px;
+  }
+}
+
+// CUSTOM RANGE INPUT : Credit : https://github.com/darlanrod/input-range-scss/blob/master/_inputrange.scss
+
+$track-color: darken(#5e1151, 5%) !default;
+$thumb-color: lighten(#5e1151, 10%) !default;
+
+$thumb-radius: 0 !default;
+$thumb-height: 25px !default;
+$thumb-width: 8px !default;
+$thumb-shadow-size: 1px !default;
+$thumb-shadow-blur: 1px !default;
+$thumb-shadow-color: darken(#5e1151, 15%) !default;
+$thumb-border-width: 0 !default;
+$thumb-border-color: #fff !default;
+
+$track-width: 100% !default;
+$track-height: 5px !default;
+$track-shadow-size: 2px !default;
+$track-shadow-blur: 2px !default;
+$track-shadow-color: darken(#5e1151, 20%) !default;
+$track-border-width: 1px !default;
+$track-border-color: darken(#5e1151, 25%) !default;
+
+$track-radius: 0 !default;
+$contrast: 5% !default;
+
+@mixin shadow($shadow-size, $shadow-blur, $shadow-color) {
+  box-shadow: $shadow-size $shadow-size $shadow-blur $shadow-color,
+    0 0 $shadow-size lighten($shadow-color, 5%);
+}
+
+@mixin track() {
+  width: $track-width;
+  height: $track-height;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+@mixin thumb() {
+  @include shadow($thumb-shadow-size, $thumb-shadow-blur, $thumb-shadow-color);
+  border: $thumb-border-width solid $thumb-border-color;
+  height: $thumb-height;
+  width: $thumb-width;
+  border-radius: $thumb-radius;
+  background: $thumb-color;
+  cursor: pointer;
+}
+
+[type='range'] {
+  -webkit-appearance: none;
+  margin: math.div($thumb-height, 20);
+  width: $track-width;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-slider-runnable-track {
+    @include track();
+    @include shadow(
+      $track-shadow-size,
+      $track-shadow-blur,
+      $track-shadow-color
+    );
+    background: $track-color;
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius;
+  }
+
+  &::-webkit-slider-thumb {
+    @include thumb();
+    -webkit-appearance: none;
+    margin-top: (math.div((-$track-border-width * 2 + $track-height), 2) -
+      math.div($thumb-height, 2));
+  }
+
+  &:focus::-webkit-slider-runnable-track {
+    background: lighten($track-color, $contrast);
+  }
+
+  &::-moz-range-track {
+    @include track();
+    @include shadow(
+      $track-shadow-size,
+      $track-shadow-blur,
+      $track-shadow-color
+    );
+    background: $track-color;
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius;
+  }
+
+  &::-moz-range-thumb {
+    @include thumb();
+  }
+
+  &::-ms-track {
+    @include track();
+    background: transparent;
+    border-color: transparent;
+    border-width: $thumb-width 0;
+    color: transparent;
+  }
+
+  &::-ms-fill-lower {
+    @include shadow(
+      $track-shadow-size,
+      $track-shadow-blur,
+      $track-shadow-color
+    );
+    background: darken($track-color, $contrast);
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius * 2;
+  }
+
+  &::-ms-fill-upper {
+    @include shadow(
+      $track-shadow-size,
+      $track-shadow-blur,
+      $track-shadow-color
+    );
+    background: $track-color;
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius * 2;
+  }
+
+  &::-ms-thumb {
+    @include thumb();
+  }
+
+  &:focus::-ms-fill-lower {
+    background: $track-color;
+  }
+
+  &:focus::-ms-fill-upper {
+    background: lighten($track-color, $contrast);
+  }
+}
